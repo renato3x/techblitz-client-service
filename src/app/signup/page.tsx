@@ -1,0 +1,143 @@
+'use client';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { ChevronRight } from 'lucide-react';
+
+const formSchema = z.object({
+  name: z
+    .string({ message: 'Name is required.' })
+    .trim()
+    .nonempty('Name is required.')
+    .max(50, 'Name is too long.')
+    .regex(/^[^0-9]*$/, { message: 'Name cannot contain numbers.' }),
+  password: z
+    .string({ message: 'Password is required.' })
+    .trim()
+    .nonempty('Password is required.')
+    .min(8, { message: 'Password must have at least 8 characters.' }),
+  username: z
+    .string({ message: 'Username is required.' })
+    .trim()
+    .nonempty('Username is required.')
+    .refine((val) => !/^\d+$/.test(val), {
+      message: 'Username cannot consist of only numbers.',
+    })
+    .refine((val) => /^[a-zA-Z0-9._]+$/.test(val), {
+      message: 'Username can only contain letters, numbers, dots, and underscores.',
+    })
+    .refine((val) => !/\.\./.test(val), {
+      message: 'Username cannot contain consecutive dots.',
+    })
+    .refine((val) => !/^[.]+$/.test(val), {
+      message: 'Username cannot consist of only dots.',
+    })
+    .refine((val) => !/^_+$/.test(val), {
+      message: 'Username cannot consist of only underscores.',
+    }),
+  email: z.string({ message: 'Email is required' }).email({ message: 'Email is required' }),
+});
+
+export default function Register() {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    mode: 'onTouched',
+    defaultValues: {
+      name: '',
+      username: '',
+      email: '',
+      password: '',
+    }
+  });
+
+  return (
+    <main className="px-5 md:px-0 h-screen flex justify-center items-center">
+      <Card className="w-[600px]">
+        <CardHeader>
+          <CardTitle>Sign up to Techblitz</CardTitle>
+          <CardDescription>Join the best technology community in the world!</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Name"/>
+                      </FormControl>
+                      <FormMessage/>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Username</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Username"/>
+                      </FormControl>
+                      <FormMessage/>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Email" type="email"/>
+                    </FormControl>
+                    <FormMessage/>
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Password" type="password"/>
+                    </FormControl>
+                    <FormMessage/>
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit" className="w-full" disabled={!form.formState.isValid}>
+                Continue
+                <ChevronRight/>
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+        <CardFooter>
+          <p className="w-full text-center">
+            Already have an account?{' '}
+            <a href="/signin" className="link">
+              Sign in
+            </a>.
+          </p>
+        </CardFooter>
+      </Card>
+    </main>
+  );
+}
