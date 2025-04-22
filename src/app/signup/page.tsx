@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
+import { useEffect } from 'react';
 
 const formSchema = z.object({
   name: z
@@ -45,14 +46,75 @@ const formSchema = z.object({
 export default function Register() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: {
       name: '',
       username: '',
       email: '',
       password: '',
-    }
+    },
   });
+
+  const username = form.watch('username');
+  const email = form.watch('email');
+
+  useEffect(() => {
+    const checkUsername = async () => {
+      if (!username) {
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/check?field=username&value=${username}`,
+      ).then(response => response.json());
+
+      if (!response.data.valid) {
+        form.setError('username', {
+          message: 'Username is already taken.',
+        });
+      } else {
+        form.clearErrors('username');
+      }
+    };
+
+    const id = setTimeout(checkUsername, 200);
+
+    return () => {
+      clearTimeout(id);
+    };
+  }, [username, form]);
+
+  useEffect(() => {
+    const checkEmail = async () => {
+      const isEmail = /^\S.+@.+\..+/gm;
+
+      if (!email) {
+        return;
+      }
+
+      if (!isEmail.test(email)) {
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/check?field=email&value=${email}`,
+      ).then(response => response.json());
+
+      if (!response.data.valid) {
+        form.setError('email', {
+          message: 'Email is already taken.',
+        });
+      } else {
+        form.clearErrors('email');
+      }
+    };
+
+    const id = setTimeout(checkEmail, 200);
+
+    return () => {
+      clearTimeout(id);
+    };
+  }, [email, form]);
 
   return (
     <main className="px-5 md:px-0 h-screen flex justify-center items-center">
@@ -74,7 +136,7 @@ export default function Register() {
                       <FormControl>
                         <Input {...field} placeholder="Name"/>
                       </FormControl>
-                      <FormMessage/>
+                      <FormMessage className="text-xs"/>
                     </FormItem>
                   )}
                 />
@@ -88,7 +150,7 @@ export default function Register() {
                       <FormControl>
                         <Input {...field} placeholder="Username"/>
                       </FormControl>
-                      <FormMessage/>
+                      <FormMessage className="text-xs"/>
                     </FormItem>
                   )}
                 />
@@ -103,11 +165,11 @@ export default function Register() {
                     <FormControl>
                       <Input {...field} placeholder="Email" type="email"/>
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage className="text-xs"/>
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="password"
@@ -117,7 +179,7 @@ export default function Register() {
                     <FormControl>
                       <Input {...field} placeholder="Password" type="password"/>
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage className="text-xs"/>
                   </FormItem>
                 )}
               />

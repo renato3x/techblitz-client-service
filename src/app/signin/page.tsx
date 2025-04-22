@@ -27,7 +27,7 @@ export default function Register() {
     defaultValues: {
       usernameOrEmail: '',
       password: '',
-    }
+    },
   });
 
   return (
@@ -53,7 +53,7 @@ export default function Register() {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="password"
@@ -77,6 +77,7 @@ export default function Register() {
         </CardContent>
         <CardFooter>
           <p className="w-full text-center">
+            {/* eslint-disable-next-line react/no-unescaped-entities */}
             Don't you have an account?{' '}
             <a href="/signup" className="link">
               Sign up
