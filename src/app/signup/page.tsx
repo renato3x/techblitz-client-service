@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import { useEffect } from 'react';
+import { api } from '@/lib/axios';
 
 const formSchema = z.object({
   name: z
@@ -43,6 +44,16 @@ const formSchema = z.object({
   email: z.string({ message: 'Email is required' }).email({ message: 'Email is required' }),
 });
 
+type UsernameEmailValidationResponse = {
+  data: {
+    valid: boolean,
+    field: string,
+    value: string,
+  },
+  timestamp: Date,
+  status_code: number,
+}
+
 export default function Register() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,13 +75,16 @@ export default function Register() {
         return;
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/check?field=username&value=${username}`,
-      ).then(response => response.json());
+      const { data: response } = await api.get<UsernameEmailValidationResponse>('auth/check', {
+        params: {
+          field: 'username',
+          value: username,
+        },
+      });
 
       if (!response.data.valid) {
         form.setError('username', {
-          message: 'Username is already taken.',
+          message: 'Username is no longer available.',
         });
       } else {
         form.clearErrors('username');
@@ -96,17 +110,22 @@ export default function Register() {
         return;
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/check?field=email&value=${email}`,
-      ).then(response => response.json());
+      const { data: response } = await api.get<UsernameEmailValidationResponse>('auth/check', {
+        params: {
+          field: 'email',
+          value: email,
+        },
+      });
 
       if (!response.data.valid) {
         form.setError('email', {
-          message: 'Email is already taken.',
+          message: 'Email is no longer available.',
         });
-      } else {
-        form.clearErrors('email');
+
+        return;
       }
+
+      form.clearErrors('email');
     };
 
     const id = setTimeout(checkEmail, 200);
