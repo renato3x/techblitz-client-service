@@ -43,6 +43,7 @@ export default tseslint.config(
       'eol-last': ['error', 'always'],
       'no-trailing-spaces': 'error',
       'no-template-curly-in-string': 'error',
+      'react-refresh/only-export-components': 'off',
     },
   },
 );
