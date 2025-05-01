@@ -1,4 +1,3 @@
-'use client';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
@@ -9,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import { useEffect } from 'react';
 import { api } from '@/lib/axios';
+import { ApiResponse } from '@/types/api';
+import { Link } from 'react-router-dom';
 
 const formSchema = z.object({
   name: z
@@ -45,19 +46,15 @@ const formSchema = z.object({
 });
 
 type UsernameEmailValidationResponse = {
-  data: {
-    valid: boolean,
-    field: string,
-    value: string,
-  },
-  timestamp: Date,
-  status_code: number,
+  valid: boolean;
+  field: string;
+  value: string;
 }
 
-export default function Register() {
+export function SignUp() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onChange',
+    mode: 'onTouched',
     defaultValues: {
       name: '',
       username: '',
@@ -75,7 +72,7 @@ export default function Register() {
         return;
       }
 
-      const { data: response } = await api.get<UsernameEmailValidationResponse>('auth/check', {
+      const { data: response } = await api.get<ApiResponse<UsernameEmailValidationResponse>>('auth/check', {
         params: {
           field: 'username',
           value: username,
@@ -86,9 +83,11 @@ export default function Register() {
         form.setError('username', {
           message: 'Username is no longer available.',
         });
-      } else {
-        form.clearErrors('username');
+
+        return;
       }
+
+      form.clearErrors('username');
     };
 
     const id = setTimeout(checkUsername, 200);
@@ -110,7 +109,7 @@ export default function Register() {
         return;
       }
 
-      const { data: response } = await api.get<UsernameEmailValidationResponse>('auth/check', {
+      const { data: response } = await api.get<ApiResponse<UsernameEmailValidationResponse>>('auth/check', {
         params: {
           field: 'email',
           value: email,
@@ -213,9 +212,9 @@ export default function Register() {
         <CardFooter>
           <p className="w-full text-center">
             Already have an account?{' '}
-            <a href="/signin" className="link">
+            <Link to={'/signin'} className="link">
               Sign in
-            </a>.
+            </Link>.
           </p>
         </CardFooter>
       </Card>

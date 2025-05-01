@@ -1,4 +1,3 @@
-'use client';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
@@ -7,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const formSchema = z.object({
   usernameOrEmail: z
@@ -20,7 +20,7 @@ const formSchema = z.object({
     .min(8, { message: 'Password must have at least 8 characters.' }),
 });
 
-export default function Register() {
+export function SignIn() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: 'onTouched',
@@ -77,11 +77,10 @@ export default function Register() {
         </CardContent>
         <CardFooter>
           <p className="w-full text-center">
-            {/* eslint-disable-next-line react/no-unescaped-entities */}
             Don't you have an account?{' '}
-            <a href="/signup" className="link">
+            <Link to={'/signup'} className="link">
               Sign up
-            </a>.
+            </Link>.
           </p>
         </CardFooter>
       </Card>
