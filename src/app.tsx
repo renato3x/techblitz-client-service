@@ -5,13 +5,19 @@ import { SignUp } from './pages/signup';
 import { NotFound } from './pages/not-found';
 import { AppLayout } from './layouts/app';
 import { Home } from './pages/home';
+import { useAuthStore } from './store/auth';
+import { ProtectedRoute } from './components/protected-route';
 
 export function App() {
+  const { isSignedIn } = useAuthStore();
+
   return (
     <ThemeProvider>
       <Routes>
-        <Route path="/" element={<AppLayout/>}>
-          <Route index element={<Home/>}/>
+        <Route element={<ProtectedRoute isSignedIn={isSignedIn}/>}>
+          <Route path="/" element={<AppLayout/>}>
+            <Route index element={<Home/>}/>
+          </Route>
         </Route>
         <Route path="/signin" element={<SignIn/>}/>
         <Route path="/signup" element={<SignUp/>}/>

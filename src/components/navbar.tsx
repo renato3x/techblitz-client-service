@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom';
 import { useTheme } from './theme-provider';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { useAuthStore } from '@/store/auth';
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
+  const { user } = useAuthStore();
 
   function toggleTheme() {
     if (theme === 'light') {
@@ -16,6 +18,18 @@ export function Navbar() {
 
     setTheme('light');
   }
+
+  function getAvatarFallback() {
+    const names = user?.name.trim().split(' ') as string[];
+
+    if (names.length === 1) {
+      return names[0][0].toUpperCase();
+    }
+
+    const first = names[0][0].toUpperCase();
+    const last = names.at(-1)?.[0]?.toUpperCase();
+    return `${first}${last}`;
+  };
 
   return (
     <header className="border-b">
@@ -34,8 +48,8 @@ export function Navbar() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="hover:cursor-pointer">
-                <AvatarImage src="https://github.com/renato3x.png" alt="User"/>
-                <AvatarFallback>RP</AvatarFallback>
+                <AvatarImage src={user?.avatar_url} alt={user?.name}/>
+                <AvatarFallback>{getAvatarFallback()}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
