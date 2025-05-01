@@ -1,11 +1,17 @@
-import { RouterProvider } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from './components/theme-provider';
-import { router } from './routes';
+import { SignIn } from './pages/signin';
+import { SignUp } from './pages/signup';
+import { NotFound } from './pages/not-found';
 
 export function App() {
   return (
     <ThemeProvider>
-      <RouterProvider router={router}/>
+      <Routes>
+        <Route path="/signin" element={<SignIn/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
+        <Route path="*" element={<NotFound/>}/>
+      </Routes>
     </ThemeProvider>
   );
 }
