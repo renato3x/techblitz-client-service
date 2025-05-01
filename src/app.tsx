@@ -7,9 +7,15 @@ import { AppLayout } from './layouts/app';
 import { Home } from './pages/home';
 import { useAuthStore } from './store/auth';
 import { ProtectedRoute } from './components/protected-route';
+import { useEffect } from 'react';
+import { authService } from './services/auth';
 
 export function App() {
   const { isSignedIn } = useAuthStore();
+
+  useEffect(() => {
+    authService.validate();
+  }, []);
 
   return (
     <ThemeProvider>

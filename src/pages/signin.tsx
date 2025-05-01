@@ -6,7 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { authService } from '@/services/auth';
+import { FormEvent } from 'react';
 
 const formSchema = z.object({
   usernameOrEmail: z
@@ -21,6 +23,7 @@ const formSchema = z.object({
 });
 
 export function SignIn() {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: 'onTouched',
@@ -29,6 +32,13 @@ export function SignIn() {
       password: '',
     },
   });
+
+  async function login(event: FormEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    await authService.login(form.getValues());
+    navigate('/');
+  }
 
   return (
     <main className="px-5 md:px-0 h-screen flex justify-center items-center">
@@ -39,7 +49,7 @@ export function SignIn() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form className="space-y-3">
+            <form className="space-y-3" onSubmit={login}>
               <FormField
                 control={form.control}
                 name="usernameOrEmail"

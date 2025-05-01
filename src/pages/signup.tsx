@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { api } from '@/lib/axios';
 import { ApiResponse } from '@/types/api';
 import { Link } from 'react-router-dom';
+import { isEmail } from '@/utils';
 
 const formSchema = z.object({
   name: z
@@ -99,13 +100,11 @@ export function SignUp() {
 
   useEffect(() => {
     const checkEmail = async () => {
-      const isEmail = /^\S.+@.+\..+/gm;
-
       if (!email) {
         return;
       }
 
-      if (!isEmail.test(email)) {
+      if (!isEmail(email)) {
         return;
       }
 
