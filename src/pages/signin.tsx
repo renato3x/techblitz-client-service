@@ -78,7 +78,7 @@ export function SignIn() {
         <CardFooter>
           <p className="w-full text-center">
             Don't you have an account?{' '}
-            <Link to={'/signup'}>
+            <Link to={'/signup'} className="link">
               Sign up
             </Link>.
           </p>

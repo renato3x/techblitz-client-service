@@ -120,4 +120,8 @@
   body {
     @apply bg-background text-foreground font-inter;
   }
+
+  .link {
+    @apply text-primary underline underline-offset-4 hover:text-primary/80;
+  }
 }
