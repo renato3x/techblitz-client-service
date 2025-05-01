@@ -1,8 +1,8 @@
-import { Bell, Moon, Settings, Sun } from 'lucide-react';
+import { Bell, Moon, Sun } from 'lucide-react';
 import { Button } from './ui/button';
 import { Link } from 'react-router-dom';
 import { useTheme } from './theme-provider';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from './ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 export function Navbar() {
@@ -41,12 +41,6 @@ export function Navbar() {
             <DropdownMenuContent>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator/>
-              <Link to="/settings">
-                <DropdownMenuItem className="hover:cursor-pointer">
-                  <Settings/>
-                  Settings
-                </DropdownMenuItem>
-              </Link>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
