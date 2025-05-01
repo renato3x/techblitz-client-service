@@ -1,8 +1,8 @@
-import { Bell, Moon, Sun } from 'lucide-react';
+import { Bell, LogOut, Moon, Settings, Sun } from 'lucide-react';
 import { Button } from './ui/button';
 import { Link } from 'react-router-dom';
 import { useTheme } from './theme-provider';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from './ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 export function Navbar() {
@@ -18,8 +18,8 @@ export function Navbar() {
   }
 
   return (
-    <header className="border-b border-dashed">
-      <nav className="flex items-center justify-between p-4">
+    <header className="border-b">
+      <nav className="flex items-center justify-between p-3">
         <Link to="/" className="text-xl font-bold">Techblitz</Link>
 
         <div className="flex items-center gap-2">
@@ -38,9 +38,17 @@ export function Navbar() {
                 <AvatarFallback>RP</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator/>
+              <DropdownMenuItem asChild className="hover:cursor-pointer">
+                <Link to="/settings">
+                  <Settings/> Settings
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="hover:cursor-pointer">
+                <LogOut/> Sign out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
