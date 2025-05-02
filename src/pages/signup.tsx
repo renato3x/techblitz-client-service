@@ -6,11 +6,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-import { useEffect } from 'react';
+import { FormEvent, useEffect } from 'react';
 import { api } from '@/lib/axios';
 import { ApiResponse } from '@/types/api';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { isEmail } from '@/utils';
+import { authService } from '@/services/auth';
 
 const formSchema = z.object({
   name: z
@@ -53,9 +54,10 @@ type UsernameEmailValidationResponse = {
 }
 
 export function SignUp() {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: {
       name: '',
       username: '',
@@ -133,6 +135,13 @@ export function SignUp() {
     };
   }, [email, form]);
 
+  async function register(event: FormEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    await authService.register(form.getValues());
+    navigate('/');
+  }
+
   return (
     <main className="px-5 md:px-0 h-screen flex justify-center items-center">
       <Card className="w-[600px]">
@@ -142,7 +151,7 @@ export function SignUp() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form className="space-y-3">
+            <form className="space-y-3" onSubmit={register}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <FormField
                   control={form.control}
