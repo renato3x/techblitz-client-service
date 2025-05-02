@@ -9,6 +9,7 @@ import { useAuthStore } from './store/auth';
 import { ProtectedRoute } from './components/protected-route';
 import { useEffect } from 'react';
 import { authService } from './services/auth';
+import { Toaster } from 'sonner';
 
 export function App() {
   const { isSignedIn } = useAuthStore();
@@ -29,6 +30,7 @@ export function App() {
         <Route path="/signup" element={<SignUp/>}/>
         <Route path="*" element={<NotFound/>}/>
       </Routes>
+      <Toaster/>
     </ThemeProvider>
   );
 }

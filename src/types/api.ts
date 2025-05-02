@@ -3,3 +3,10 @@ export type ApiResponse<T> = {
   timestamp: Date;
   status_code: number;
 }
+
+export type ApiErrorResponse = {
+  message: string;
+  timestamp: Date,
+  status_code: number;
+  errors?: string[];
+};

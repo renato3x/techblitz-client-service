@@ -1,8 +1,10 @@
 import { api } from '@/lib/axios';
 import { useAuthStore } from '@/store/auth';
-import { ApiResponse } from '@/types/api';
+import { ApiErrorResponse, ApiResponse } from '@/types/api';
 import { User } from '@/types/user';
 import { isEmail } from '@/utils';
+import { notifier } from '@/utils/notifier';
+import { AxiosError, AxiosResponse } from 'axios';
 
 type LoginCredentials = {
   usernameOrEmail: string;
@@ -20,10 +22,28 @@ export const authService = {
       password: password,
     };
 
-    const { data: response } = await api.post<ApiResponse<LoginResponse>>('auth/login', body);
+    try {
+      const { data: response } = await api.post<ApiResponse<LoginResponse>>('auth/login', body);
+      useAuthStore.setState({
+        isSignedIn: true,
+        user: response.data.user,
+      });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const { data: response } = error.response as AxiosResponse<ApiErrorResponse>;
+
+        notifier.open('Error!', response.message);
+        return;
+      }
+
+      notifier.open('Oops!', 'Something went wrong. Try again later.');
+    }
+  },
+  logout: async () => {
+    await api.post('auth/logout');
     useAuthStore.setState({
-      isSignedIn: true,
-      user: response.data.user,
+      isSignedIn: false,
+      user: null,
     });
   },
   validate: async () => {
@@ -33,7 +53,7 @@ export const authService = {
         isSignedIn: true,
         user: response.data,
       });
-    } catch (_) {
+    } catch {
       useAuthStore.setState({
         isSignedIn: false,
         user: null,

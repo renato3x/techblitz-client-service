@@ -1,12 +1,14 @@
-import { Bell, LogOut, Moon, Settings, Sun } from 'lucide-react';
+import { Bell, LogOut, Moon, Sun } from 'lucide-react';
 import { Button } from './ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from './theme-provider';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { useAuthStore } from '@/store/auth';
+import { authService } from '@/services/auth';
 
 export function Navbar() {
+  const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { user } = useAuthStore();
 
@@ -20,16 +22,21 @@ export function Navbar() {
   }
 
   function getAvatarFallback() {
-    const names = user?.name.trim().split(' ') as string[];
+    const names = user!.name.trim().split(' ');
 
     if (names.length === 1) {
       return names[0][0].toUpperCase();
     }
 
     const first = names[0][0].toUpperCase();
-    const last = names.at(-1)?.[0]?.toUpperCase();
+    const last = names.at(-1)![0].toUpperCase();
     return `${first}${last}`;
-  };
+  }
+
+  async function logout() {
+    await authService.logout();
+    navigate('/signin');
+  }
 
   return (
     <header className="border-b">
@@ -55,12 +62,7 @@ export function Navbar() {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator/>
-              <DropdownMenuItem asChild className="hover:cursor-pointer">
-                <Link to="/settings">
-                  <Settings/> Settings
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="hover:cursor-pointer">
+              <DropdownMenuItem className="hover:cursor-pointer" onClick={logout}>
                 <LogOut/> Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>
