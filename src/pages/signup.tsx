@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
-import { FormEvent, useEffect } from 'react';
+import { useEffect } from 'react';
 import { api } from '@/lib/axios';
 import { ApiResponse } from '@/types/api';
 import { Link, useNavigate } from 'react-router-dom';
@@ -135,10 +135,8 @@ export function SignUp() {
     };
   }, [email, form]);
 
-  async function register(event: FormEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    await authService.register(form.getValues());
+  async function register(credentials: z.infer<typeof formSchema>) {
+    await authService.register(credentials);
     navigate('/');
   }
 
@@ -151,7 +149,7 @@ export function SignUp() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form className="space-y-3" onSubmit={register}>
+            <form className="space-y-3" onSubmit={form.handleSubmit(register)}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <FormField
                   control={form.control}

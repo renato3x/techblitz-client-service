@@ -1,9 +1,8 @@
+import { useAuthStore } from '@/store/auth';
 import { Navigate, Outlet } from 'react-router-dom';
 
-type ProtectedRouteProps = {
-  isSignedIn: boolean;
-}
+export function ProtectedRoute() {
+  const { isSignedIn } = useAuthStore();
 
-export function ProtectedRoute({ isSignedIn }: ProtectedRouteProps) {
   return isSignedIn ? <Outlet/> : <Navigate to="/signin" replace/>;
 }

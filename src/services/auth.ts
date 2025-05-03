@@ -1,10 +1,8 @@
 import { api } from '@/lib/axios';
 import { useAuthStore } from '@/store/auth';
-import { ApiErrorResponse, ApiResponse } from '@/types/api';
+import { ApiResponse } from '@/types/api';
 import { User } from '@/types/user';
 import { isEmail } from '@/utils';
-import { notifier } from '@/utils/notifier';
-import { AxiosError, AxiosResponse } from 'axios';
 
 type LoginCredentials = {
   usernameOrEmail: string;
@@ -24,26 +22,11 @@ type AuthResponse = {
 
 export const authService = {
   register: async (credentials: RegisterCredentials) => {
-    try {
-      const { data: response } = await api.post<ApiResponse<AuthResponse>>('auth/register', credentials);
-      useAuthStore.setState({
-        isSignedIn: true,
-        user: response.data.user,
-      });
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        const { data: response } = error.response as AxiosResponse<ApiErrorResponse>;
-
-        if (response.errors) {
-          notifier.open('Error', response.errors[0]);
-        }
-
-        notifier.open('Error!', response.message);
-        return;
-      }
-
-      notifier.open('Oops!', 'Something went wrong. Try again later.');
-    }
+    const { data: response } = await api.post<ApiResponse<AuthResponse>>('auth/register', credentials);
+    useAuthStore.setState({
+      isSignedIn: true,
+      user: response.data.user,
+    });
   },
   login: async ({ password, usernameOrEmail }: LoginCredentials) => {
     const body = {
@@ -51,22 +34,11 @@ export const authService = {
       password: password,
     };
 
-    try {
-      const { data: response } = await api.post<ApiResponse<AuthResponse>>('auth/login', body);
-      useAuthStore.setState({
-        isSignedIn: true,
-        user: response.data.user,
-      });
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        const { data: response } = error.response as AxiosResponse<ApiErrorResponse>;
-
-        notifier.open('Error!', response.message);
-        return;
-      }
-
-      notifier.open('Oops!', 'Something went wrong. Try again later.');
-    }
+    const { data: response } = await api.post<ApiResponse<AuthResponse>>('auth/login', body);
+    useAuthStore.setState({
+      isSignedIn: true,
+      user: response.data.user,
+    });
   },
   logout: async () => {
     await api.post('auth/logout');
@@ -76,6 +48,8 @@ export const authService = {
     });
   },
   validate: async () => {
+    useAuthStore.setState({ isLoading: true });
+
     try {
       const { data: response } = await api.get<ApiResponse<User>>('auth/user');
       useAuthStore.setState({
@@ -87,6 +61,8 @@ export const authService = {
         isSignedIn: false,
         user: null,
       });
+    } finally {
+      useAuthStore.setState({ isLoading: false });
     }
   },
 };

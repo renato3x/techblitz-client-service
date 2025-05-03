@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '@/services/auth';
-import { FormEvent } from 'react';
 
 const formSchema = z.object({
   usernameOrEmail: z
@@ -26,17 +25,15 @@ export function SignIn() {
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: {
       usernameOrEmail: '',
       password: '',
     },
   });
 
-  async function login(event: FormEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    await authService.login(form.getValues());
+  async function login(credentials: z.infer<typeof formSchema>) {
+    await authService.login(credentials);
     navigate('/');
   }
 
@@ -49,7 +46,7 @@ export function SignIn() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form className="space-y-3" onSubmit={login}>
+            <form className="space-y-3" onSubmit={form.handleSubmit(login)}>
               <FormField
                 control={form.control}
                 name="usernameOrEmail"

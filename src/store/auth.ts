@@ -5,6 +5,7 @@ import { User } from '@/types/user';
 type State = {
   user: User | null;
   isSignedIn: boolean;
+  isLoading: boolean;
 };
 
 type Action = {
@@ -17,6 +18,7 @@ export const useAuthStore = create<State & Action>()(
     (set) => ({
       isSignedIn: false,
       user: null,
+      isLoading: false,
       setIsSignedIn: (isSignedIn) => set(() => ({ isSignedIn })),
       setUser: (user) => set(() => ({ user })),
     }),
