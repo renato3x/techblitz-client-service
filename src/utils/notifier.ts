@@ -10,4 +10,7 @@ export const notifier = {
   error: (title: string, description: string) => {
     toast.error(title, { description });
   },
+  defaultError: () => {
+    notifier.error('Oops!', 'Something went wrong. Please, try again later');
+  },
 };

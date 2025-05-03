@@ -5,8 +5,9 @@ export type ApiResponse<T> = {
 }
 
 export type ApiErrorResponse = {
+  error: string;
   message: string;
   timestamp: Date,
   status_code: number;
   errors?: string[];
-};
+}

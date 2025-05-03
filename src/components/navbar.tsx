@@ -1,4 +1,4 @@
-import { Bell, LogOut, Moon, Sun } from 'lucide-react';
+import { LogOut, Moon, Sun, User } from 'lucide-react';
 import { Button } from './ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from './theme-provider';
@@ -34,7 +34,7 @@ export function Navbar() {
   }
 
   async function logout() {
-    await authService.logout();
+    await authService.signout();
     navigate('/signin');
   }
 
@@ -48,10 +48,6 @@ export function Navbar() {
             {theme === 'light' ? <Sun/> : <Moon/>}
           </Button>
 
-          <Button variant="ghost" size="icon">
-            <Bell/>
-          </Button>
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="hover:cursor-pointer">
@@ -62,6 +58,11 @@ export function Navbar() {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator/>
+              <DropdownMenuItem className="hover:cursor-pointer" asChild>
+                <Link to={`/${user!.username}`}>
+                  <User/> Profile
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem className="hover:cursor-pointer" onClick={logout}>
                 <LogOut/> Sign out
               </DropdownMenuItem>

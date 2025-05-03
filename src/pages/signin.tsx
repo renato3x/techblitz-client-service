@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '@/services/auth';
+import { isAxiosError } from 'axios';
+import { ApiErrorResponse } from '@/types/api';
+import { notifier } from '@/utils/notifier';
 
 const formSchema = z.object({
   usernameOrEmail: z
@@ -33,8 +36,24 @@ export function SignIn() {
   });
 
   async function login(credentials: z.infer<typeof formSchema>) {
-    await authService.login(credentials);
-    navigate('/');
+    try {
+      await authService.signin(credentials);
+      navigate('/');
+    } catch (error) {
+      if (!isAxiosError<ApiErrorResponse>(error)) {
+        notifier.defaultError();
+        return;
+      }
+
+      const response = error.response!.data;
+
+      if (response.errors) {
+        notifier.error(response.error, response.errors[0]);
+        return;
+      }
+
+      notifier.error(response.error, response.message);
+    }
   }
 
   return (

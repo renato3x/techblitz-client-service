@@ -21,14 +21,14 @@ type AuthResponse = {
 };
 
 export const authService = {
-  register: async (credentials: RegisterCredentials) => {
+  signup: async (credentials: RegisterCredentials) => {
     const { data: response } = await api.post<ApiResponse<AuthResponse>>('auth/register', credentials);
     useAuthStore.setState({
       isSignedIn: true,
       user: response.data.user,
     });
   },
-  login: async ({ password, usernameOrEmail }: LoginCredentials) => {
+  signin: async ({ password, usernameOrEmail }: LoginCredentials) => {
     const body = {
       ...(isEmail(usernameOrEmail) ? { email: usernameOrEmail } : { username: usernameOrEmail }),
       password: password,
@@ -40,7 +40,7 @@ export const authService = {
       user: response.data.user,
     });
   },
-  logout: async () => {
+  signout: async () => {
     await api.post('auth/logout');
     useAuthStore.setState({
       isSignedIn: false,
