@@ -1,12 +1,9 @@
-import { ReactNode } from 'react';
+import { cn } from '@/lib/utils';
+import { ComponentProps } from 'react';
 
-interface ContainerProps {
-  children: ReactNode
-}
-
-export function Container({ children }: ContainerProps) {
+export function Container({ children, className, ...props }: ComponentProps<'div'>) {
   return (
-    <div className="w-full max-w-6xl px-4 mx-auto">
+    <div className={cn('w-full md:w-6xl px-3 md:px-0 mx-auto', className)} {...props}>
       {children}
     </div>
   );
