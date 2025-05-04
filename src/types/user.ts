@@ -7,6 +7,7 @@ export type User = {
   email: string;
   bio?: string;
   avatar_url?: string;
+  avatar_fallback: string;
   role: Role;
   total_followers: number,
   total_following: number,

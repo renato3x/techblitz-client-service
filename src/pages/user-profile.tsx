@@ -34,18 +34,6 @@ export function UserProfile() {
     retry: false,
   });
 
-  function getAvatarFallback() {
-    const names = user!.name.trim().split(' ');
-
-    if (names.length === 1) {
-      return names[0][0].toUpperCase();
-    }
-
-    const first = names[0][0].toUpperCase();
-    const last = names.at(-1)![0].toUpperCase();
-    return `${first}${last}`;
-  }
-
   if (isLoading) {
     return <UserProfileSkeleton/>;
   }
@@ -64,7 +52,7 @@ export function UserProfile() {
         <div className="flex gap-4 grow">
           <Avatar className="w-20 h-20">
             <AvatarImage src={user.avatar_url} alt={user.name} />
-            <AvatarFallback className='text-3xl bg-primary'>{getAvatarFallback()}</AvatarFallback>
+            <AvatarFallback className='text-3xl bg-primary'>{user.avatar_fallback}</AvatarFallback>
           </Avatar>
           <div className="grow">
             <h1 className="text-2xl font-semibold">{user.name}</h1>

@@ -42,18 +42,6 @@ function SignedInMenu({ user }: { user: User }) {
     setTheme('light');
   }
 
-  function getAvatarFallback() {
-    const names = user!.name.trim().split(' ');
-
-    if (names.length === 1) {
-      return names[0][0].toUpperCase();
-    }
-
-    const first = names[0][0].toUpperCase();
-    const last = names.at(-1)![0].toUpperCase();
-    return `${first}${last}`;
-  }
-
   async function logout() {
     await authService.signout();
     navigate('/signin');
@@ -71,7 +59,7 @@ function SignedInMenu({ user }: { user: User }) {
         <DropdownMenuTrigger asChild>
           <Avatar className="hover:cursor-pointer">
             <AvatarImage src={user?.avatar_url} alt={user.name}/>
-            <AvatarFallback>{getAvatarFallback()}</AvatarFallback>
+            <AvatarFallback>{user.avatar_fallback}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
