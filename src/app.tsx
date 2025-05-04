@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import { ThemeProvider, useTheme } from './components/theme-provider';
 import { SignIn } from './pages/signin';
 import { SignUp } from './pages/signup';
-import { NotFound } from './pages/not-found';
+import { ResourceNotFound } from './pages/resource-not-found';
 import { AppLayout } from './layouts/app';
 import { Home } from './pages/home';
 import { ProtectedRoute } from './components/protected-route';
@@ -38,7 +38,7 @@ export function App() {
         </Route>
         <Route path="/signin" element={<SignIn/>}/>
         <Route path="/signup" element={<SignUp/>}/>
-        <Route path="*" element={<NotFound/>}/>
+        <Route path="*" element={<ResourceNotFound/>}/>
       </Routes>
       <Toaster
         theme={theme}

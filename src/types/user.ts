@@ -8,6 +8,8 @@ export type User = {
   bio?: string;
   avatar_url?: string;
   role: Role;
-  created_at: string;
-  updated_at: string;
+  total_followers: number,
+  total_following: number,
+  created_at: Date;
+  updated_at: Date;
 }
