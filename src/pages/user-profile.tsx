@@ -1,3 +1,4 @@
+import { Container } from '@/components/container';
 import { useParams } from 'react-router-dom';
 
 type UserProfileParams = {
@@ -8,8 +9,10 @@ export function UserProfile() {
   const { username } = useParams<UserProfileParams>();
 
   return (
-    <div>
-      Profile from {username}
-    </div>
+    <Container>
+      <div>
+        <p>Profile from {username}</p>
+      </div>
+    </Container>
   );
 }
