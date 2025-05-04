@@ -1,4 +1,4 @@
-import { Bell, LogOut, Moon, SquarePen, Sun, User as UserIcon } from 'lucide-react';
+import { Bell, LogOut, Moon, Settings, SquarePen, Sun, User as UserIcon } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from './theme-provider';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from './ui/dropdown-menu';
@@ -80,6 +80,11 @@ function SignedInMenu({ user }: { user: User }) {
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
             <Link to={`/${user.username}`}>
               <UserIcon/> Profile
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="hover:cursor-pointer" asChild>
+            <Link to="/settings">
+              <Settings/> Settings
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="hover:cursor-pointer" onClick={toggleTheme}>

@@ -5,14 +5,15 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Separator } from '@/components/ui/separator';
 import { User } from '@/types/user';
 import { notifier } from '@/utils/notifier';
-import { EllipsisVertical, Share2, UserLock } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { EllipsisVertical, Pencil, Share2, UserLock } from 'lucide-react';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { api } from '@/lib/axios';
 import { ApiResponse } from '@/types/api';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuthStore } from '@/store/auth';
 import { NotFound } from '@/components/not-found';
+import { useAppStore } from '@/store/app';
 
 type UserProfileParams = {
   username: string;
@@ -78,13 +79,13 @@ export function UserProfile() {
               </span>
             </div>
             <div className="flex md:hidden mt-2 gap-2">
-              <Button className="grow">Follow</Button>
+              <UserProfileAction user={user}/>
               <UserProfileDropdown user={user}/>
             </div>
           </div>
         </div>
         <div className="hidden md:flex gap-2">
-          <Button>Follow</Button>
+          <UserProfileAction user={user}/>
           <UserProfileDropdown user={user}/>
         </div>
       </header>
@@ -143,6 +144,36 @@ function UserProfileMobileFollowInfo({ user }: { user: User }) {
       </section>
       <Separator className="flex md:hidden"/>
     </>
+  );
+}
+
+function UserProfileAction({ user }: { user: User }) {
+  const { isSignedIn, user: signedInUser } = useAuthStore();
+  const { setRedirectUrl } = useAppStore();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  async function follow() {
+    if (!isSignedIn) {
+      setRedirectUrl(pathname);
+      navigate('/signin');
+      return;
+    }
+  }
+
+  if (isSignedIn && signedInUser?.id === user.id) {
+    return (
+      <Button className="grow" asChild>
+        <Link to="/settings/profile">
+          <Pencil/>
+          Edit profile
+        </Link>
+      </Button>
+    );
+  }
+
+  return (
+    <Button className="grow" onClick={follow}>Follow</Button>
   );
 }
 
