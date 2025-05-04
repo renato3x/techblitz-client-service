@@ -1,3 +1,5 @@
+export type Role = 'USER';
+
 export type User = {
   id: string;
   name: string;
@@ -5,6 +7,7 @@ export type User = {
   email: string;
   bio?: string;
   avatar_url?: string;
+  role: Role;
   created_at: string;
   updated_at: string;
 }

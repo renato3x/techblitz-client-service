@@ -9,8 +9,9 @@ import { ProtectedRoute } from './components/protected-route';
 import { useEffect } from 'react';
 import { authService } from './services/auth';
 import { Toaster } from 'sonner';
-import { AlertTriangle, CheckCircle, Info } from 'lucide-react';
+import { CircleCheck, CircleX, Info } from 'lucide-react';
 import { useAuthStore } from './store/auth';
+import { UserProfile } from './pages/user-profile';
 
 export function App() {
   const { theme } = useTheme();
@@ -32,6 +33,9 @@ export function App() {
             <Route index element={<Home/>}/>
           </Route>
         </Route>
+        <Route path="/:username" element={<AppLayout/>}>
+          <Route index element={<UserProfile/>}/>
+        </Route>
         <Route path="/signin" element={<SignIn/>}/>
         <Route path="/signup" element={<SignUp/>}/>
         <Route path="*" element={<NotFound/>}/>
@@ -41,9 +45,9 @@ export function App() {
         duration={7000}
         closeButton
         icons={{
-          info: <Info className="w-5 h-5"/>,
-          success: <CheckCircle className="w-5 h-5"/>,
-          error: <AlertTriangle className="w-5 h-5"/>,
+          info: <Info className="w-4.5 h-4.5"/>,
+          success: <CircleCheck className="w-4.5 h-4.5"/>,
+          error: <CircleX className="w-4.5 h-4.5"/>,
         }}
       />
     </ThemeProvider>

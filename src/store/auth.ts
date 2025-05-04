@@ -9,8 +9,8 @@ type State = {
 };
 
 type Action = {
-  setIsSignedIn: (isSignedIn: boolean) => void;
   setUser: (user: User) => void;
+  setIsSignedIn: (isSignedIn: boolean) => void;
 }
 
 export const useAuthStore = create<State & Action>()(
