@@ -13,6 +13,7 @@ import { CircleCheck, CircleX, Info } from 'lucide-react';
 import { useAuthStore } from './store/auth';
 import { UserProfile } from './pages/user-profile';
 import { Settings } from './pages/settings';
+import { Profile } from './pages/settings/profile';
 
 export function App() {
   const { theme } = useTheme();
@@ -32,7 +33,9 @@ export function App() {
         <Route element={<ProtectedRoute/>}>
           <Route path="/" element={<AppLayout/>}>
             <Route index element={<Home/>}/>
-            <Route path="/settings/:tab?" element={<Settings/>}/>
+            <Route path="/settings" element={<Settings/>}>
+              <Route path="profile" index element={<Profile/>}/>
+            </Route>
           </Route>
         </Route>
         <Route path="/:username" element={<AppLayout/>}>
