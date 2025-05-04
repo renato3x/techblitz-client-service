@@ -1,5 +1,5 @@
 import { Bell, LogOut, Moon, SquarePen, Sun, User as UserIcon } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from './theme-provider';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -7,6 +7,7 @@ import { useAuthStore } from '@/store/auth';
 import { authService } from '@/services/auth';
 import { User } from '@/types/user';
 import { Button } from './ui/button';
+import { useAppStore } from '@/store/app';
 
 export function Navbar() {
   const { user, isSignedIn } = useAuthStore();
@@ -94,13 +95,22 @@ function SignedInMenu({ user }: { user: User }) {
 }
 
 function SignedOutMenu() {
+  const { setRedirectUrl } = useAppStore();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  function go(to: string) {
+    setRedirectUrl(pathname);
+    navigate(to);
+  }
+
   return (
     <>
-      <Button asChild>
-        <Link to="/signup">Sign up</Link>
+      <Button onClick={() => go('/signup')}>
+        Sign up
       </Button>
-      <Button asChild variant="ghost">
-        <Link to="/signin">Sign in</Link>
+      <Button variant="ghost" onClick={() => go('/signin')}>
+        Sign in
       </Button>
     </>
   );

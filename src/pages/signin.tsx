@@ -11,6 +11,7 @@ import { authService } from '@/services/auth';
 import { isAxiosError } from 'axios';
 import { ApiErrorResponse } from '@/types/api';
 import { notifier } from '@/utils/notifier';
+import { useAppStore } from '@/store/app';
 
 const formSchema = z.object({
   usernameOrEmail: z
@@ -25,6 +26,7 @@ const formSchema = z.object({
 });
 
 export function SignIn() {
+  const { redirectUrl, setRedirectUrl } = useAppStore();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -38,7 +40,8 @@ export function SignIn() {
   async function login(credentials: z.infer<typeof formSchema>) {
     try {
       await authService.signin(credentials);
-      navigate('/');
+      navigate(redirectUrl ? redirectUrl : '/');
+      setRedirectUrl('');
     } catch (error) {
       if (!isAxiosError<ApiErrorResponse>(error)) {
         notifier.defaultError();
