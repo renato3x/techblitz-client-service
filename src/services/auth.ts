@@ -16,6 +16,14 @@ type RegisterCredentials = {
   password: string;
 }
 
+type UpdateCredentials = {
+  name?: string;
+  username?: string;
+  email?: string;
+  bio?: string;
+  avatar_url?: string;
+}
+
 type AuthResponse = {
   user: User,
 };
@@ -46,6 +54,10 @@ export const authService = {
       isSignedIn: false,
       user: null,
     });
+  },
+  update: async (credentials: UpdateCredentials) => {
+    const { data: response } = await api.patch<ApiResponse<User>>('auth/user', credentials);
+    useAuthStore.setState({ user: response.data });
   },
   validate: async () => {
     useAuthStore.setState({ isLoading: true });

@@ -4,10 +4,13 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { api } from '@/lib/axios';
+import { authService } from '@/services/auth';
 import { useAuthStore } from '@/store/auth';
-import { ApiResponse } from '@/types/api';
+import { ApiErrorResponse, ApiResponse } from '@/types/api';
 import { isEmail } from '@/utils';
+import { notifier } from '@/utils/notifier';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { isAxiosError } from 'axios';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -128,6 +131,33 @@ export function Profile() {
     };
   }, [email, form, user]);
 
+  async function update(credentials: z.infer<typeof formSchema>) {
+    try {
+      await authService.update(credentials);
+      notifier.success('Data updated', 'Your account\'s data was updated successfully.');
+    } catch (error) {
+      if (!isAxiosError<ApiErrorResponse>(error)) {
+        notifier.defaultError();
+        return;
+      }
+
+      if (error.status === 401) {
+        await authService.signout();
+        notifier.error('Sessions expired', 'Your current has expired. Sign in again.');
+        return;
+      }
+
+      const response = error.response!.data;
+
+      if (response.errors) {
+        notifier.error(response.error, response.errors[0]);
+        return;
+      }
+
+      notifier.error(response.error, response.message);
+    }
+  }
+
   return (
     <div className="min-h-full max-h-full flex flex-col justify-center items-center">
       <div className="flex justify-center items-center p-5">
@@ -137,7 +167,7 @@ export function Profile() {
         </Avatar>
       </div>
       <FormProvider {...form}>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={form.handleSubmit(update)}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <FormField
               control={form.control}
