@@ -75,7 +75,7 @@ function ProfileData({ user }: { user: User }) {
       name: user.name,
       username: user.username,
       email: user.email,
-      bio: '',
+      bio: user.bio,
     },
   });
 

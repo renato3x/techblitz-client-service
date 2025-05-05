@@ -14,6 +14,7 @@ import { useAuthStore } from './store/auth';
 import { UserProfile } from './pages/user-profile';
 import { Settings } from './pages/settings';
 import { Profile } from './pages/settings/profile';
+import { Authentication } from './pages/settings/authentication';
 
 export function App() {
   const { theme } = useTheme();
@@ -35,6 +36,7 @@ export function App() {
             <Route index element={<Home/>}/>
             <Route path="/settings" element={<Settings/>}>
               <Route path="profile" index element={<Profile/>}/>
+              <Route path="authentication" index element={<Authentication/>}/>
             </Route>
           </Route>
         </Route>

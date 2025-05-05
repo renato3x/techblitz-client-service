@@ -1,6 +1,6 @@
 import { Container } from '@/components/container';
 import { Button } from '@/components/ui/button';
-import { UserCircle } from 'lucide-react';
+import { Lock, UserCircle } from 'lucide-react';
 import { Link, Navigate, Outlet, useLocation } from 'react-router-dom';
 
 export function Settings() {
@@ -15,6 +15,11 @@ export function Settings() {
       to: '/settings/profile',
       title: 'Profile',
       icon: <UserCircle/>,
+    },
+    {
+      to: '/settings/authentication',
+      title: 'Authentication',
+      icon: <Lock/>,
     },
   ];
 
