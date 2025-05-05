@@ -1,6 +1,6 @@
 import { Container } from '@/components/container';
 import { Button } from '@/components/ui/button';
-import { UserRoundCog } from 'lucide-react';
+import { UserCircle } from 'lucide-react';
 import { Link, Navigate, Outlet, useLocation } from 'react-router-dom';
 
 export function Settings() {
@@ -14,7 +14,7 @@ export function Settings() {
     {
       to: '/settings/profile',
       title: 'Profile',
-      icon: <UserRoundCog/>,
+      icon: <UserCircle/>,
     },
   ];
 

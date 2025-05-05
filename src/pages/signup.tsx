@@ -106,11 +106,7 @@ export function SignUp() {
 
   useEffect(() => {
     const checkEmail = async () => {
-      if (!email) {
-        return;
-      }
-
-      if (!isEmail(email)) {
+      if (!email || !isEmail(email)) {
         return;
       }
 
