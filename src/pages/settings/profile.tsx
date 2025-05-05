@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,11 +8,13 @@ import { api } from '@/lib/axios';
 import { authService } from '@/services/auth';
 import { useAuthStore } from '@/store/auth';
 import { ApiErrorResponse, ApiResponse } from '@/types/api';
+import { User } from '@/types/user';
 import { isEmail } from '@/utils';
 import { notifier } from '@/utils/notifier';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { isAxiosError } from 'axios';
-import { useEffect } from 'react';
+import { Pencil } from 'lucide-react';
+import { ChangeEvent, useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -55,13 +58,23 @@ type UsernameEmailValidationResponse = {
 
 export function Profile() {
   const { user } = useAuthStore();
+
+  return (
+    <div className="min-h-full max-h-full flex flex-col justify-center items-center">
+      <ProfileAvatar user={user as User}/>
+      <ProfileData user={user as User}/>
+    </div>
+  );
+}
+
+function ProfileData({ user }: { user: User }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: 'onChange',
     defaultValues: {
-      name: user?.name,
-      username: user?.username,
-      email: user?.email,
+      name: user.name,
+      username: user.username,
+      email: user.email,
       bio: '',
     },
   });
@@ -159,78 +172,135 @@ export function Profile() {
   }
 
   return (
-    <div className="min-h-full max-h-full flex flex-col justify-center items-center">
+    <FormProvider {...form}>
+      <form className="space-y-4" onSubmit={form.handleSubmit(update)}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Name"/>
+                </FormControl>
+                <FormMessage className="text-xs"/>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Username"/>
+                </FormControl>
+                <FormMessage className="text-xs"/>
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Email" type="email"/>
+              </FormControl>
+              <FormMessage className="text-xs"/>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Bio</FormLabel>
+              <FormControl>
+                <Textarea {...field} className="min-h-[200px]"/>
+              </FormControl>
+              <FormMessage className="text-xs"/>
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit" className="w-full" disabled={!form.formState.isValid}>
+          Save
+        </Button>
+      </form>
+    </FormProvider>
+  );
+}
+
+function ProfileAvatar({ user }: { user: User }) {
+  const avatarInputRef = useRef<HTMLInputElement>({} as HTMLInputElement);
+
+  async function updateAvatar(event: ChangeEvent<HTMLInputElement>) {
+    const file = Array.from(event.target.files as FileList)[0];
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      await authService.updateAvatar(file);
+      notifier.success('Avatar updated', 'Your avatar was updated successfully.');
+    } catch (error) {
+      if (!isAxiosError<ApiErrorResponse>(error)) {
+        notifier.defaultError();
+        return;
+      }
+
+      if (error.status === 401) {
+        await authService.signout();
+        notifier.error('Sessions expired', 'Your current has expired. Sign in again.');
+        return;
+      }
+
+      const response = error.response!.data;
+
+      if (response.errors) {
+        notifier.error(response.error, response.errors[0]);
+        return;
+      }
+
+      notifier.error(response.error, response.message);
+    }
+  }
+
+  return (
+    <>
+      <input
+        id="avatar-input"
+        className="hidden"
+        type="file"
+        ref={avatarInputRef}
+        accept={import.meta.env.VITE_ACCEPTED_IMAGE_EXTENSIONS}
+        onChange={updateAvatar}
+      />
       <div className="flex justify-center items-center p-5">
-        <Avatar className="w-20 h-20 hover:cursor-pointer">
-          <AvatarImage src={user?.avatar_url} alt={user?.username}/>
-          <AvatarFallback className="text-3xl bg-primary text-foreground">{user?.avatar_fallback}</AvatarFallback>
-        </Avatar>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="w-20 h-20 hover:cursor-pointer">
+              <AvatarImage src={user?.avatar_url} alt={user?.username}/>
+              <AvatarFallback className="text-3xl bg-primary text-foreground">{user?.avatar_fallback}</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem className="hover:cursor-pointer" onClick={() => avatarInputRef.current.click()}>
+              <Pencil/> Change avatar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-      <FormProvider {...form}>
-        <form className="space-y-4" onSubmit={form.handleSubmit(update)}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Name"/>
-                  </FormControl>
-                  <FormMessage className="text-xs"/>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Username"/>
-                  </FormControl>
-                  <FormMessage className="text-xs"/>
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Email" type="email"/>
-                </FormControl>
-                <FormMessage className="text-xs"/>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="bio"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Bio</FormLabel>
-                <FormControl>
-                  <Textarea {...field} className="min-h-[200px]"/>
-                </FormControl>
-                <FormMessage className="text-xs"/>
-              </FormItem>
-            )}
-          />
-
-          <Button type="submit" className="w-full" disabled={!form.formState.isValid}>
-            Save
-          </Button>
-        </form>
-      </FormProvider>
-    </div>
+    </>
   );
 }

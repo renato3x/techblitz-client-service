@@ -1,8 +1,10 @@
-import { api } from '@/lib/axios';
+import { api, storage } from '@/lib/axios';
 import { useAuthStore } from '@/store/auth';
 import { ApiResponse } from '@/types/api';
+import { StorageResponse } from '@/types/storage';
 import { User } from '@/types/user';
 import { isEmail } from '@/utils';
+import { isAxiosError } from 'axios';
 
 type LoginCredentials = {
   usernameOrEmail: string;
@@ -27,6 +29,13 @@ type UpdateCredentials = {
 type AuthResponse = {
   user: User,
 };
+
+type UploadFileResponse = {
+  filename: string;
+  content_type: string;
+  size: number;
+  url: string;
+}
 
 export const authService = {
   signup: async (credentials: RegisterCredentials) => {
@@ -58,6 +67,27 @@ export const authService = {
   update: async (credentials: UpdateCredentials) => {
     const { data: response } = await api.patch<ApiResponse<User>>('auth/user', credentials);
     useAuthStore.setState({ user: response.data });
+  },
+  updateAvatar: async (file: File) => {
+    await api.post('storage', {
+      type: 'avatars',
+      context: 'upload',
+    });
+
+    const form = new FormData();
+    form.append('file', file);
+
+    try {
+      const { data: response } = await storage.post<StorageResponse<UploadFileResponse>>('avatars', form);
+      await authService.update({ avatar_url: response.data.url });
+    } catch (error) {
+      if (!isAxiosError(error) || error.config?.baseURL === import.meta.env.VITE_STORAGE_SERVER_URL) {
+        throw new Error('Error uploading image');
+      }
+
+      throw error;
+    }
+
   },
   validate: async () => {
     useAuthStore.setState({ isLoading: true });
