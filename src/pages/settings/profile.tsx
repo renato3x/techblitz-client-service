@@ -15,7 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { isAxiosError } from 'axios';
 import { Pencil } from 'lucide-react';
 import { ChangeEvent, useEffect, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
 const formSchema = z.object({
@@ -79,8 +79,10 @@ function ProfileData({ user }: { user: User }) {
     },
   });
 
-  const username = form.watch('username');
-  const email = form.watch('email');
+  const [username, email] = useWatch({
+    control: form.control,
+    name: ['username', 'email'],
+  });
 
   useEffect(() => {
     const checkUsername = async () => {
