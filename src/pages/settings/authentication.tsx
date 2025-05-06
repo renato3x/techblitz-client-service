@@ -1,6 +1,6 @@
+import { PasswordInput } from '@/components/password-input';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { authService } from '@/services/auth';
 import { notifier } from '@/utils/notifier';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -81,7 +81,7 @@ export function Authentication() {
               <FormItem>
                 <FormLabel>Current password</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Current password" type="password"/>
+                  <PasswordInput {...field} placeholder="Current password"/>
                 </FormControl>
                 <FormMessage className="text-xs"/>
               </FormItem>
@@ -95,11 +95,7 @@ export function Authentication() {
               <FormItem>
                 <FormLabel>New password</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="New password"
-                    type="password"
-                  />
+                  <PasswordInput {...field} placeholder="New password"/>
                 </FormControl>
                 <FormMessage className="text-xs"/>
               </FormItem>
@@ -113,7 +109,7 @@ export function Authentication() {
               <FormItem>
                 <FormLabel>Confirm password</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Confirm password" type="password"/>
+                  <PasswordInput {...field} placeholder="Confirm password"/>
                 </FormControl>
                 <FormMessage className="text-xs"/>
               </FormItem>

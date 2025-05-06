@@ -9,6 +9,7 @@ import { ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '@/services/auth';
 import { useAppStore } from '@/store/app';
+import { PasswordInput } from '@/components/password-input';
 
 const formSchema = z.object({
   usernameOrEmail: z
@@ -71,7 +72,7 @@ export function SignIn() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Password" type="password"/>
+                      <PasswordInput {...field} placeholder="Password"/>
                     </FormControl>
                     <FormMessage/>
                   </FormItem>

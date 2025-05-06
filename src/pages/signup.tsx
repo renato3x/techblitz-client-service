@@ -13,6 +13,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { isEmail } from '@/utils';
 import { authService } from '@/services/auth';
 import { useAppStore } from '@/store/app';
+import { PasswordInput } from '@/components/password-input';
 
 const formSchema = z
   .object({
@@ -218,7 +219,7 @@ export function SignUp() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Password" type="password"/>
+                      <PasswordInput {...field} placeholder="Password"/>
                     </FormControl>
                     <FormMessage className="text-xs"/>
                   </FormItem>
@@ -232,7 +233,7 @@ export function SignUp() {
                   <FormItem>
                     <FormLabel>Confirm password</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Password" type="password"/>
+                    <PasswordInput {...field} placeholder="Password"/>
                     </FormControl>
                     <FormMessage className="text-xs"/>
                   </FormItem>
