@@ -50,7 +50,7 @@ export function UserProfile() {
         <div className="flex gap-4 grow">
           <Avatar className="w-20 h-20">
             <AvatarImage src={user.avatar_url} alt={user.name} />
-            <AvatarFallback className="text-3xl bg-primary text-foreground">{user.avatar_fallback}</AvatarFallback>
+            <AvatarFallback className="text-3xl bg-primary text-white">{user.avatar_fallback}</AvatarFallback>
           </Avatar>
           <div className="grow">
             <h1 className="text-2xl font-semibold">{user.name}</h1>

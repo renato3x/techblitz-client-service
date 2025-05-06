@@ -291,7 +291,7 @@ function ProfileAvatar({ user }: { user: User }) {
           <DropdownMenuTrigger asChild>
             <Avatar className="w-20 h-20 hover:cursor-pointer">
               <AvatarImage src={user?.avatar_url} alt={user?.username}/>
-              <AvatarFallback className="text-3xl bg-primary text-foreground">{user?.avatar_fallback}</AvatarFallback>
+              <AvatarFallback className="text-3xl bg-primary text-white">{user?.avatar_fallback}</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
