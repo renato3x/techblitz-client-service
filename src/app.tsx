@@ -10,15 +10,18 @@ import { useEffect } from 'react';
 import { authService } from './services/auth';
 import { Toaster } from 'sonner';
 import { CircleCheck, CircleX, Info } from 'lucide-react';
-import { useAuthStore } from './store/auth';
 import { UserProfile } from './pages/user-profile';
 import { Settings } from './pages/settings';
 import { Profile } from './pages/settings/profile';
 import { Authentication } from './pages/settings/authentication';
+import { useQuery } from '@tanstack/react-query';
 
 export function App() {
   const { theme } = useTheme();
-  const { isLoading } = useAuthStore();
+  const { isLoading } = useQuery({
+    queryKey: ['validate-auth'],
+    queryFn: () => authService.validate(),
+  });
 
   useEffect(() => {
     authService.validate();

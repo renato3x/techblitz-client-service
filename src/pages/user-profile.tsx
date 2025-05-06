@@ -30,8 +30,6 @@ export function UserProfile() {
     queryKey: ['user-profile', params.username],
     enabled: !!params.username,
     queryFn: () => searchUser(params.username as string),
-    refetchOnWindowFocus: false,
-    retry: false,
   });
 
   if (isLoading) {

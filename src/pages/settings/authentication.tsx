@@ -2,10 +2,8 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { authService } from '@/services/auth';
-import { ApiErrorResponse } from '@/types/api';
 import { notifier } from '@/utils/notifier';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { isAxiosError } from 'axios';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
@@ -68,30 +66,8 @@ export function Authentication() {
   }, [confirmPassword, newPassword, form]);
 
   async function changePassword({ old_password, new_password }: FormSchema) {
-    try {
-      await authService.changePassword({ old_password, new_password });
-      notifier.success('Password changed', 'Password changed successfully.');
-    } catch (error) {
-      if (!isAxiosError<ApiErrorResponse>(error)) {
-        notifier.defaultError();
-        return;
-      }
-
-      if (error.status === 401) {
-        await authService.signout();
-        notifier.error('Sessions expired', 'Your current session has expired. Sign in again.');
-        return;
-      }
-
-      const response = error.response!.data;
-
-      if (response.errors) {
-        notifier.error(response.error, response.errors[0]);
-        return;
-      }
-
-      notifier.error(response.error, response.message);
-    }
+    await authService.changePassword({ old_password, new_password });
+    notifier.success('Password changed', 'Password changed successfully.');
   }
 
   return (

@@ -98,8 +98,6 @@ export const authService = {
     await api.post('auth/change-password', credentials);
   },
   validate: async () => {
-    useAuthStore.setState({ isLoading: true });
-
     try {
       const { data: response } = await api.get<ApiResponse<User>>('auth/user');
       useAuthStore.setState({
@@ -111,8 +109,8 @@ export const authService = {
         isSignedIn: false,
         user: null,
       });
-    } finally {
-      useAuthStore.setState({ isLoading: false });
     }
+
+    return null;
   },
 };

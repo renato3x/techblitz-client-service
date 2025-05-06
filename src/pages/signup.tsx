@@ -8,12 +8,10 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import { useEffect } from 'react';
 import { api } from '@/lib/axios';
-import { ApiErrorResponse, ApiResponse } from '@/types/api';
+import { ApiResponse } from '@/types/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { isEmail } from '@/utils';
 import { authService } from '@/services/auth';
-import { isAxiosError } from 'axios';
-import { notifier } from '@/utils/notifier';
 import { useAppStore } from '@/store/app';
 
 const formSchema = z.object({
@@ -136,25 +134,9 @@ export function SignUp() {
   }, [email, form]);
 
   async function register(credentials: z.infer<typeof formSchema>) {
-    try {
-      await authService.signup(credentials);
-      navigate(redirectUrl ? redirectUrl : '/');
-      setRedirectUrl('');
-    } catch (error) {
-      if (!isAxiosError<ApiErrorResponse>(error)) {
-        notifier.defaultError();
-        return;
-      }
-
-      const response = error.response!.data;
-
-      if (response.errors) {
-        notifier.error(response.error, response.errors[0]);
-        return;
-      }
-
-      notifier.error(response.error, response.message);
-    }
+    await authService.signup(credentials);
+    navigate(redirectUrl ? redirectUrl : '/');
+    setRedirectUrl('');
   }
 
   return (
