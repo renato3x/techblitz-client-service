@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { api } from '@/lib/axios';
@@ -15,7 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { isAxiosError } from 'axios';
 import { Pencil } from 'lucide-react';
 import { ChangeEvent, useEffect, useRef } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const formSchema = z.object({
@@ -75,7 +75,7 @@ function ProfileData({ user }: { user: User }) {
       name: user.name,
       username: user.username,
       email: user.email,
-      bio: user.bio,
+      bio: user.bio || '',
     },
   });
 
@@ -156,7 +156,7 @@ function ProfileData({ user }: { user: User }) {
 
       if (error.status === 401) {
         await authService.signout();
-        notifier.error('Sessions expired', 'Your current has expired. Sign in again.');
+        notifier.error('Sessions expired', 'Your current session has expired. Sign in again.');
         return;
       }
 
@@ -172,8 +172,8 @@ function ProfileData({ user }: { user: User }) {
   }
 
   return (
-    <FormProvider {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(update)}>
+    <Form {...form}>
+      <form className="space-y-4 w-[500px]" onSubmit={form.handleSubmit(update)}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <FormField
             control={form.control}
@@ -236,7 +236,7 @@ function ProfileData({ user }: { user: User }) {
           Save
         </Button>
       </form>
-    </FormProvider>
+    </Form>
   );
 }
 
@@ -261,7 +261,7 @@ function ProfileAvatar({ user }: { user: User }) {
 
       if (error.status === 401) {
         await authService.signout();
-        notifier.error('Sessions expired', 'Your current has expired. Sign in again.');
+        notifier.error('Sessions expired', 'Your current session has expired. Sign in again.');
         return;
       }
 

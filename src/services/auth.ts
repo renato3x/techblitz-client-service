@@ -26,6 +26,11 @@ type UpdateCredentials = {
   avatar_url?: string;
 }
 
+type ChangePasswordCredentials = {
+  old_password: string;
+  new_password: string;
+}
+
 type AuthResponse = {
   user: User,
 };
@@ -88,6 +93,9 @@ export const authService = {
       throw error;
     }
 
+  },
+  changePassword: async (credentials: ChangePasswordCredentials) => {
+    await api.post('auth/change-password', credentials);
   },
   validate: async () => {
     useAuthStore.setState({ isLoading: true });
