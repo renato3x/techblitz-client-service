@@ -79,6 +79,12 @@ export function SignIn() {
                 )}
               />
 
+              <p className="text-right">
+                <Link to="/forgot-password" className="link">
+                  Forgot password
+                </Link>
+              </p>
+
               <Button type="submit" className="w-full" disabled={!form.formState.isValid}>
                 Continue
                 <ChevronRight/>
@@ -89,7 +95,7 @@ export function SignIn() {
         <CardFooter>
           <p className="w-full text-center">
             Don't you have an account?{' '}
-            <Link to={'/signup'} className="link">
+            <Link to="/signup" className="link">
               Sign up
             </Link>.
           </p>

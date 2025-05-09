@@ -250,7 +250,7 @@ export function SignUp() {
         <CardFooter>
           <p className="w-full text-center">
             Already have an account?{' '}
-            <Link to={'/signin'} className="link">
+            <Link to="/signin" className="link">
               Sign in
             </Link>.
           </p>
