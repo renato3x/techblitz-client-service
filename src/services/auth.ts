@@ -31,6 +31,11 @@ type ChangePasswordCredentials = {
   new_password: string;
 }
 
+type ResetPasswordCredentials = {
+  token: string;
+  password: string;
+};
+
 type AuthResponse = {
   user: User,
 };
@@ -72,6 +77,9 @@ export const authService = {
   forgotPassword: async (email: string) => {
     const { data } = await api.post<ApiResponse<{ expiration_date_in_millis: number }>>('auth/forgot-password', { email });
     return data.data;
+  },
+  resetPassword: async (credentials: ResetPasswordCredentials) => {
+    await api.post('/auth/reset-password', credentials);
   },
   update: async (credentials: UpdateCredentials) => {
     const { data: response } = await api.patch<ApiResponse<User>>('auth/user', credentials);

@@ -21,10 +21,10 @@ const formSchema = z
       .nonempty('Enter new password.')
       .min(8, { message: 'New password must have at least 8 characters.' }),
     confirm_password: z
-      .string({ message: 'Enter new password.' })
+      .string({ message: 'Confirm your password.' })
       .trim()
-      .nonempty('Enter new password.')
-      .min(8, { message: 'New password must have at least 8 characters.' }),
+      .nonempty('Confirm your password.')
+      .min(8, { message: 'Password must have at least 8 characters.' }),
   })
   .refine((data) => data.old_password !== data.new_password, {
     message: 'New password must be different from current password.',

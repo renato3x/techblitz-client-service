@@ -16,6 +16,7 @@ import { Profile } from './pages/settings/profile';
 import { Authentication } from './pages/settings/authentication';
 import { useQuery } from '@tanstack/react-query';
 import { ForgotPassword } from './pages/forgot-password';
+import { ResetPassword } from './pages/reset-password';
 
 export function App() {
   const { theme } = useTheme();
@@ -50,6 +51,7 @@ export function App() {
         <Route path="/signin" element={<SignIn/>}/>
         <Route path="/signup" element={<SignUp/>}/>
         <Route path="/forgot-password" element={<ForgotPassword/>}/>
+        <Route path="/reset-password" element={<ResetPassword/>}/>
         <Route path="*" element={<ResourceNotFound/>}/>
       </Routes>
       <Toaster
