@@ -52,7 +52,7 @@ const formSchema = z
       .refine((val) => !/^_+$/.test(val), {
         message: 'Username cannot consist of only underscores.',
       }),
-    email: z.string({ message: 'Email is required' }).email({ message: 'Email is required' }),
+    email: z.string({ message: 'Email is required.' }).email({ message: 'Email is required.' }),
   })
   .refine((data) => data.confirm_password === data.password, {
     message: 'Password does not match.',

@@ -69,6 +69,10 @@ export const authService = {
       user: null,
     });
   },
+  forgotPassword: async (email: string) => {
+    const { data } = await api.post<ApiResponse<{ expiration_date_in_millis: number }>>('auth/forgot-password', { email });
+    return data.data;
+  },
   update: async (credentials: UpdateCredentials) => {
     const { data: response } = await api.patch<ApiResponse<User>>('auth/user', credentials);
     useAuthStore.setState({ user: response.data });

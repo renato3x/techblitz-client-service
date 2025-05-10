@@ -21,7 +21,7 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.status === 401 && !['/signin', '/signup'].includes(location.pathname)) {
+    if (error.status === 401 && !['/signin', '/signup', '/forgot-password'].includes(location.pathname)) {
       await authService.signout();
       notifier.error('Session expired', 'Your current session has expired. Sign in again.');
       return Promise.reject(error);
